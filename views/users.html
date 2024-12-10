@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список пользователей</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        async function loadUser() {
+            const response = await fetch('/users');
+            const users = await response.json();
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = ''; 
+
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'card mb-3';
+                userItem.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">${user.username}</h5>
+                        <p>ID: ${user.id} </p>
+                        <p>Пароль ${user.password} </p>
+                        <button class="btn btn-danger ms-2" onclick="deleteUser(${user.id})">Удалить</button>
+                        <a class="btn btn-danger ms-2" href="/users/admin/${user.id}"> Подробнее </a>
+
+                `;
+                usersList.appendChild(userItem);
+            });
+        }
+
+        async function deleteUser(id) {
+            
+            await fetch(`/users/${id}`, { method: 'DELETE' });
+            loadUser();
+        }
+
+        // async function putUser(id) {
+        //     await fetch(`/users/${id}`,
+        //         {   method: 'PUT'
+        //         }
+        //     )
+        //     loadUser();
+        // }
+
+        async function addUser(id) {
+            await fetch(`/users`, {method: 'POST'})
+            loadUser();
+        }
+
+
+        window.onload = loadUser;
+    </script>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4">Управление пользователями:</h1>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                
+                <div id="usersList" class="list-group">
+                </div>
+            </div>
+
+
+            
+            <div class="col-lg-6">
+                <h3>Добавить нового пользователя</h3>
+                <form action="/users" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label"> Логин: </label>
+                        <input type="text" name="username" id="username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Пароль: </label>
+                        <input type="text" name="password" id="password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Добавить пользователя</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="/logout" class="btn btn-warning">Выйти</a>
+            <a href="/account" class="btn btn-warning"> личный кабинет</a>
+            <a href="/pets/admin" class="btn btn-warning"> Управление питомцами</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

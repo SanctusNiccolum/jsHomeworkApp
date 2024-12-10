@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование пользователя</title>
+    <script>
+        async function updateUser() {
+        const id = document.getElementById('id').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            await fetch(`/users/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            alert('Данные пользователя успешно обновлены');
+            // window.location.href = '/users';
+        } catch (error) {
+            console.error('Ошибка при обновлении:', error);
+            alert('Не удалось обновить данные пользователя');
+        }
+    }
+    </script>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4">Редактирование пользователя</h1>
+        
+        <form id="updateForm">
+            <input type="hidden" id="id" name="id">
+            <div class="mb-3">
+                <label for="username" class="form-label">Логин:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Пароль:</label>
+                <input type="text" id="password" name="password" class="form-control">
+            </div>
+            <button type="submit" onclick="updateUser()" class="btn btn-primary">Обновить</button>
+        </form>
+    </div>
+</body>
+</html>
